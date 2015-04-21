@@ -51,7 +51,7 @@ def check_node(url, user, password, name)
 end
 
 def make_url(new_resource)
-  url = "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}"
+  "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}"
 end
 
 def create_node(new_resource, fields)
