@@ -55,6 +55,7 @@ def make_url(new_resource)
 end
 
 def create_node(new_resource, fields)
+  url = make_url(new_resource)
   checked_node = check_node(url, new_resource.user, new_resource.password, new_resource.name)
   if new_resource.contents
     return if checked_node == new_resource.contents
