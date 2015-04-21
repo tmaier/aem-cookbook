@@ -39,8 +39,29 @@ def curl_form(url, user, password, fields)
   c
 end
 
+def make_url(new_resource)
+  "http://#{new_resource.host}:#{new_resource.port}/libs/granite/security/post/authorizables"
+end
+
+def group_exists?(new_resource)
+  first_letter = new_resource.name[0].downcase
+  url = "http://#{new_resource.host}:#{new_resource.port}/home/groups/#{first_letter}/#{new_resource.name}.json"
+  curl(url, new_resource.admin_user, new_resource.admin_password)
+end
+
 action :create do
+  unless group_exists?(new_resource)
+    url = make_url(new_resource)
+    fields = [
+      Curl::PostField.content('createGroup', ''),
+      Curl::PostField.content('authorizableId', new_resource.name)
+    ]
+    curl_form(url, new_resource.admin_user, new_resource.admin_password, fields)
+  end
 end
 
 action :delete do
+  if group_exists?(new_resource)
+    # ToDo: delete group
+  end
 end
