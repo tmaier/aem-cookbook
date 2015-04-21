@@ -54,6 +54,23 @@ def make_url(new_resource)
   url = "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}"
 end
 
+def create_node(new_resource, fields)
+  checked_node = check_node(url, new_resource.user, new_resource.password, new_resource.name)
+  if new_resource.contents
+    return if checked_node == new_resource.contents
+  else
+    return if checked_node
+  end
+
+  c = curl_form(url, new_resource.user, new_resource.password, fields)
+  if c.response_code == 200 || c.response_code == 201
+    new_resource.updated_by_last_action(true)
+    Chef::Log.debug("New jcr_node was created at #{new_resource.path}")
+  else
+    raise "JCR Node Creation failed.  HTTP code: #{c.response_code}"
+  end
+end
+
 action :create do
   url = make_url(new_resource)
   # How to create the node depends on the type.  I'm only supporting type 'file' right now.
@@ -72,6 +89,26 @@ action :create do
         raise "JCR Node Creation failed.  HTTP code: #{c.response_code}"
       end
     end
+  when 'sling:Folder'
+    fields = [
+      Curl::PostField.content('jcr:primaryType', 'sling:Folder')
+    ]
+    create_node(new_resource, fields)
+  when 'sling:OrderedFolder'
+    fields = [
+      Curl::PostField.content('jcr:primaryType', 'sling:OrderedFolder')
+    ]
+    create_node(new_resource, fields)
+  when 'cq:Page'
+    fields = [
+      Curl::PostField.content('jcr:primaryType', 'cq:Page')
+    ]
+    create_node(new_resource, fields)
+  when 'nt:folder'
+    fields = [
+      Curl::PostField.content('jcr:primaryType', 'nt:folder')
+    ]
+    create_node(new_resource, fields)
   else
     raise "Node type '#{new_resource.type}' is unsupported for creation.  If you need this type, please file an issue, or better yet, a pull request."
   end
