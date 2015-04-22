@@ -23,8 +23,8 @@ default_action :create
 
 attribute :name, kind_of: String, name_attribute: true
 attribute :path, kind_of: String, required: true
-attribute :privileges, kind_of: String, required: true
-attribute :principal, kind_of: Hash, required: true
+attribute :privileges, kind_of: Hash, required: true
+attribute :principal, kind_of: String, required: true
 
 attribute :host, kind_of: String, required: true
 attribute :port, kind_of: String, required: true
