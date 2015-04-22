@@ -18,8 +18,6 @@
 
 # This resource manages AEM groups
 
-require 'curb'
-
 def curl(url, user, password)
   c = Curl::Easy.new(url)
   c.http_auth_types = :basic
