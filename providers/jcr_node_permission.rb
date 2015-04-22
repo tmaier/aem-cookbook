@@ -50,12 +50,24 @@ def check_node(url, user, password, name)
   end
 end
 
-def make_url(new_resource)
-  "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}/#{new_resource.name}.modifyAce.json"
+def make_url(new_resource, action)
+  "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}/#{new_resource.name}.#{action}.json"
 end
 
-def create_node(new_resource, fields)
-  url = make_url(new_resource)
+def set_permission(new_resource, fields)
+  url = make_url(new_resource, 'modifyAce')
+
+  c = curl_form(url, new_resource.user, new_resource.password, fields)
+  if c.response_code == 200 || c.response_code == 201
+    new_resource.updated_by_last_action(true)
+    Chef::Log.debug("New jcr_node was created at #{new_resource.path}")
+  else
+    fail "JCR Setting node privileges failed. HTTP code: #{c.response_code}"
+  end
+end
+
+def remove_permission(new_resource, fields)
+  url = make_url(new_resource, 'deleteAce')
 
   c = curl_form(url, new_resource.user, new_resource.password, fields)
   if c.response_code == 200 || c.response_code == 201
@@ -73,8 +85,12 @@ action :create do
   new_resource.privileges.each do |privilege, permission|
     fields << Curl::PostField.content("privilege@#{privilege}", permission)
   end
-  create_node(new_resource, fields)
+  set_permission(new_resource, fields)
 end
 
 action :delete do
+  fields = [
+    Curl::PostField.content('applyTo', new_resource.principal)
+  ]
+  remove_permission(new_resource, fields)
 end
