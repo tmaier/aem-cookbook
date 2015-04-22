@@ -44,7 +44,15 @@ end
 def group_exists?(new_resource)
   first_letter = new_resource.name[0].downcase
   url = "http://#{new_resource.host}:#{new_resource.port}/home/groups/#{first_letter}/#{new_resource.name}.json"
-  curl(url, new_resource.admin_user, new_resource.admin_password)
+  c = curl(url, new_resource.admin_user, new_resource.admin_password)
+  case c.response_code
+  when 200, 201
+    true
+  when 404
+    false
+  else
+    fail "Unable to read group at #{url}. response_code: #{c.response_code} response: #{c.body_str}"
+  end
 end
 
 action :create do
