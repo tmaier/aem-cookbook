@@ -74,7 +74,7 @@ def remove_permission(new_resource, fields)
     new_resource.updated_by_last_action(true)
     Chef::Log.debug("New jcr_node was created at #{new_resource.path}")
   else
-    fail "JCR Setting node privileges failed. HTTP code: #{c.response_code}"
+    fail "JCR Removing node privileges failed. HTTP code: #{c.response_code}"
   end
 end
 
