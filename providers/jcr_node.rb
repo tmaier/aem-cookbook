@@ -54,8 +54,9 @@ def make_url(new_resource)
   "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}"
 end
 
-def create_node(new_resource, fields)
+def create_node(new_resource, fields, name = nil)
   url = make_url(new_resource)
+  url += "/#{name}" if name
   checked_node = check_node(url, new_resource.user, new_resource.password, new_resource.name)
   if new_resource.contents
     return if checked_node == new_resource.contents
@@ -94,22 +95,22 @@ action :create do
     fields = [
       Curl::PostField.content('jcr:primaryType', 'sling:Folder')
     ]
-    create_node(new_resource, fields)
+    create_node(new_resource, fields, new_resource.name)
   when 'sling:OrderedFolder'
     fields = [
       Curl::PostField.content('jcr:primaryType', 'sling:OrderedFolder')
     ]
-    create_node(new_resource, fields)
+    create_node(new_resource, fields, new_resource.name)
   when 'cq:Page'
     fields = [
       Curl::PostField.content('jcr:primaryType', 'cq:Page')
     ]
-    create_node(new_resource, fields)
+    create_node(new_resource, fields, new_resource.name)
   when 'nt:folder'
     fields = [
       Curl::PostField.content('jcr:primaryType', 'nt:folder')
     ]
-    create_node(new_resource, fields)
+    create_node(new_resource, fields, new_resource.name)
   else
     raise "Node type '#{new_resource.type}' is unsupported for creation.  If you need this type, please file an issue, or better yet, a pull request."
   end
