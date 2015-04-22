@@ -24,6 +24,6 @@ default_action :create
 attribute :name, :kind_of => String, :name_attribute => true
 
 attribute :host, :kind_of => String, :default => 'localhost'
-attribute :port, :kind_of => String, :default => nil
-attribute :admin_user, :kind_of => String, :default => nil
-attribute :admin_password, :kind_of => String, :default => nil
+attribute :port, :kind_of => String, :required => true
+attribute :admin_user, :kind_of => String, :required => true
+attribute :admin_password, :kind_of => String, :required => true
