@@ -41,12 +41,10 @@ end
 
 def curl_install(file, new_resource)
   url = "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles"
-  fields = [
-    Curl::PostField.content('action', 'install'),
-    Curl::PostField.content('bundlestartlevel', '20'),
-    Curl::PostField.content('bundlefile', %(@"#{file}")),
-  ]
-  curl_form(url, new_resource.user, new_resource.password, fields)
+  cmd = %Q(curl -u #{new_resource.user}:#{new_resource.password} -F action=install -F bundlestartlevel=20 -F bundlefile=@"#{file}" #{url})
+  runner = Mixlib::ShellOut.new(cmd)
+  runner.run_command
+  runner.error!
 end
 
 def curl_activate(new_resource)
@@ -74,7 +72,7 @@ def curl_uninstall(new_resource)
 end
 
 def bundle?(new_resource, check_version = true, valid_states = nil)
-  url = "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles/#{new_resource.symbolic_name}"
+  url = "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles/#{new_resource.symbolic_name}.json"
   c = curl(url, new_resource.user, new_resource.password)
   case c.response_code
   when 200, 201
@@ -103,7 +101,7 @@ end
 
 action :install do
   unless bundle?(new_resource)
-    file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource.symbolic_name}-#{new_resource.version}.jar}"
+    file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource.symbolic_name}-#{new_resource.version}.jar"
     remote_file file_path do
       source new_resource.bundle_url
     end
