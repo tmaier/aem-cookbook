@@ -103,7 +103,7 @@ end
 
 action :install do
   unless bundle?(new_resource)
-    file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource[:symbolic_name]}-#{new_resource[:nme].jar}"
+    file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource[:symbolic_name]}-#{new_resource[:version].jar}"
     remote_file file_path do
       source new_resource[:bundle_url]
     end
