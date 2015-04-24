@@ -111,6 +111,8 @@ action :install do
     file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource.symbolic_name}-#{new_resource.version}.jar"
     remote_file file_path do
       source new_resource.bundle_url
+
+      action :create
     end
 
     curl_install(file_path, new_resource)
