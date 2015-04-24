@@ -19,6 +19,7 @@
 # This provider manages AEM bundles
 
 require 'json'
+require 'timeout'
 
 def curl(url, user, password)
   c = Curl::Easy.new(url)
@@ -45,6 +46,12 @@ def curl_install(file, new_resource)
   runner = Mixlib::ShellOut.new(cmd)
   runner.run_command
   runner.error!
+  Timeout::timeout(600) do
+    loop do
+      sleep(1)
+      break if bundle?(new_resource)
+    end
+  end
 end
 
 def curl_activate(new_resource)
