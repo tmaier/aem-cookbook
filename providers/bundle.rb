@@ -40,52 +40,52 @@ def curl_form(url, user, password, fields)
 end
 
 def curl_install(file, new_resource)
-  url = "http://#{new_resource[:host]}:#{new_resource[:port]}/system/console/bundles"
+  url = "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles"
   fields = [
     Curl::PostField.content('action', 'install'),
     Curl::PostField.content('bundlestartlevel', '20'),
     Curl::PostField.content('bundlefile', %(@"#{file}")),
   ]
-  curl_form(url, new_resource[:user], new_resource[:password], fields)
+  curl_form(url, new_resource.user, new_resource.password, fields)
 end
 
 def curl_activate(new_resource)
-  url = "http://#{new_resource[:host]}:#{new_resource[:port]}/system/console/bundles/#{new_resource[:symbolic_name]}"
+  url = "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles/#{new_resource.symbolic_name}"
   fields = [
     Curl::PostField.content('action', 'start')
   ]
-  curl_form(url, new_resource[:user], new_resource[:password], fields)
+  curl_form(url, new_resource.user, new_resource.password, fields)
 end
 
 def curl_disable(new_resource)
-  url = "http://#{new_resource[:host]}:#{new_resource[:port]}/system/console/bundles/#{new_resource[:symbolic_name]}"
+  url = "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles/#{new_resource.symbolic_name}"
   fields = [
     Curl::PostField.content('action', 'stop')
   ]
-  curl_form(url, new_resource[:user], new_resource[:password], fields)
+  curl_form(url, new_resource.user, new_resource.password, fields)
 end
 
 def curl_uninstall(new_resource)
-  url = "http://#{new_resource[:host]}:#{new_resource[:port]}/system/console/bundles/#{new_resource[:symbolic_name]}"
+  url = "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles/#{new_resource.symbolic_name}"
   fields = [
     Curl::PostField.content('action', 'uninstall')
   ]
-  curl_form(url, new_resource[:user], new_resource[:password], fields)
+  curl_form(url, new_resource.user, new_resource.password, fields)
 end
 
 def bundle?(new_resource, check_version = true, valid_states = nil)
-  url = "http://#{new_resource[:host]}:#{new_resource[:port]}/system/console/bundles/#{new_resource[:symbolic_name]}"
-  c = curl(url, new_resource[:user], new_resource[:password])
+  url = "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles/#{new_resource.symbolic_name}"
+  c = curl(url, new_resource.user, new_resource.password)
   case c.response_code
   when 200, 201
     content = JSON.parse(c.body_str)
     result =
       content['data']
-        .select { |h| h['symbolicName'] == new_resource[:symbolic_name] }
+        .select { |h| h['symbolicName'] == new_resource.symbolic_name }
 
     if check_version
       result =
-        result.select { |h| h['version'] == new_resource[:version] }
+        result.select { |h| h['version'] == new_resource.version }
     end
 
     if valid_states && !valid_states.empty?
@@ -103,9 +103,9 @@ end
 
 action :install do
   unless bundle?(new_resource)
-    file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource[:symbolic_name]}-#{new_resource[:version].jar}"
+    file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource.symbolic_name}-#{new_resource.version.jar}"
     remote_file file_path do
-      source new_resource[:bundle_url]
+      source new_resource.bundle_url
     end
 
     curl_install(file_path, new_resource)
