@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: aem
-# Resource:: jcr_node
+# Resource:: bundle
 #
-# Copyright 2015, Tacit Knowledge, Inc.
+# Copyright 2015
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,16 +16,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This resource manages an AEM JCR node
+# This resource manages AEM bundles
 
-actions :create, :delete
-default_action :create
+actions :install, :start, :stop, :uninstall
 
-attribute :name, :kind_of => String, :name_attribute => true
-attribute :path, :kind_of => String, :required => true
-attribute :type, :kind_of => String, :default => nil
-attribute :contents, :kind_of => String, :default => nil
-attribute :host, :kind_of => String, :required => true
-attribute :port, :kind_of => String, :required => true
+attribute :symbolic_name, :kind_of => String, :name_attribute => true, :required => true
+attribute :version, :kind_of => String, :default => nil
+attribute :bundle_url, :kind_of => String, :default => nil
+
+attribute :host, :kind_of => String, :default => 'localhost'
 attribute :user, :kind_of => String, :required => true
 attribute :password, :kind_of => String, :required => true
+attribute :port, :kind_of => String, :required => true
