@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: aem
-# Resource:: jcr_node
+# Resource:: jcr_node_permission
 #
-# Copyright 2015, Tacit Knowledge, Inc.
+# Copyright 2015
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,16 +16,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This resource manages an AEM JCR node
+# This resource manages AEM JCR node permissions
 
 actions :create, :delete
 default_action :create
 
-attribute :name, :kind_of => String, :name_attribute => true
-attribute :path, :kind_of => String, :required => true
-attribute :type, :kind_of => String, :default => nil
-attribute :contents, :kind_of => String, :default => nil
-attribute :host, :kind_of => String, :required => true
-attribute :port, :kind_of => String, :required => true
-attribute :user, :kind_of => String, :required => true
-attribute :password, :kind_of => String, :required => true
+attribute :name, kind_of: String, name_attribute: true
+attribute :path, kind_of: String, required: true
+attribute :privileges, kind_of: Hash, required: true
+attribute :principal, kind_of: String, required: true
+
+attribute :host, kind_of: String, required: true
+attribute :port, kind_of: String, required: true
+attribute :user, kind_of: String, required: true
+attribute :password, kind_of: String, required: true
