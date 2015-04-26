@@ -1,8 +1,8 @@
-require 'curb'
-
 module AEM
   module Curl
     def curl(url)
+      require 'curb'
+
       c = ::Curl::Easy.new(url.to_s)
       c.http_auth_types = :basic
       c.username = url.user
