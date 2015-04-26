@@ -21,9 +21,9 @@
 actions :create, :delete
 default_action :create
 
-attribute :name, :kind_of => String, :name_attribute => true
+attribute :name, kind_of: String, name_attribute: true
 
-attribute :host, :kind_of => String, :default => 'localhost'
-attribute :port, :kind_of => String, :required => true
-attribute :admin_user, :kind_of => String, :required => true
-attribute :admin_password, :kind_of => String, :required => true
+attribute :host, kind_of: String, default: 'localhost'
+attribute :port, kind_of: String, required: true
+attribute :admin_user, kind_of: String, required: true
+attribute :admin_password, kind_of: String, required: true

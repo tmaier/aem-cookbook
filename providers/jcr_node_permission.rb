@@ -37,25 +37,12 @@ def curl_form(url, user, password, fields)
   c
 end
 
-def make_url(new_resource, action)
+def make_url(action)
   "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}/#{new_resource.name}.#{action}.json"
 end
 
-def permission?(new_resource, privilege, permission)
-  url = make_url(new_resource, 'acl')
-  c = curl(url, user, password)
-  case c.response_code
-  when 200, 201
-    c.body_str
-  when 404
-    false
-  else
-    fail "Unable to read JCR node at #{url}. response_code: #{c.response_code} response: #{c.body_str}"
-  end
-end
-
-def set_permission(new_resource, fields)
-  url = make_url(new_resource, 'modifyAce')
+def set_permission(fields)
+  url = make_url('modifyAce')
 
   c = curl_form(url, new_resource.user, new_resource.password, fields)
   if c.response_code == 200 || c.response_code == 201
@@ -66,8 +53,8 @@ def set_permission(new_resource, fields)
   end
 end
 
-def remove_permission(new_resource, fields)
-  url = make_url(new_resource, 'deleteAce')
+def remove_permission(fields)
+  url = make_url('deleteAce')
 
   c = curl_form(url, new_resource.user, new_resource.password, fields)
   if c.response_code == 200 || c.response_code == 201
@@ -79,18 +66,22 @@ def remove_permission(new_resource, fields)
 end
 
 action :create do
-  fields = [
-    Curl::PostField.content('principalId', new_resource.principal)
-  ]
-  new_resource.privileges.each do |privilege, permission|
-    fields << Curl::PostField.content("privilege@#{privilege}", permission)
+  converge_by 'Set node permissions' do
+    fields = [
+      Curl::PostField.content('principalId', new_resource.principal)
+    ]
+    new_resource.privileges.each do |privilege, permission|
+      fields << Curl::PostField.content("privilege@#{privilege}", permission)
+    end
+    set_permission(fields)
   end
-  set_permission(new_resource, fields)
 end
 
 action :delete do
-  fields = [
-    Curl::PostField.content('applyTo', new_resource.principal)
-  ]
-  remove_permission(new_resource, fields)
+  converge_by 'Remove node permissions' do
+    fields = [
+      Curl::PostField.content('applyTo', new_resource.principal)
+    ]
+    remove_permission(fields)
+  end
 end

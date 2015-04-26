@@ -19,12 +19,13 @@
 # This resource manages AEM bundles
 
 actions :install, :start, :stop, :uninstall
+default_action :install
 
-attribute :symbolic_name, :kind_of => String, :name_attribute => true, :required => true
-attribute :version, :kind_of => String, :default => nil
-attribute :bundle_url, :kind_of => String, :default => nil
+attribute :symbolic_name, kind_of: String, name_attribute: true, required: true
+attribute :version, kind_of: String, default: nil
+attribute :bundle_url, kind_of: String, default: nil
 
-attribute :host, :kind_of => String, :default => 'localhost'
-attribute :user, :kind_of => String, :required => true
-attribute :password, :kind_of => String, :required => true
-attribute :port, :kind_of => String, :required => true
+attribute :host, kind_of: String, default: 'localhost'
+attribute :user, kind_of: String, required: true
+attribute :password, kind_of: String, required: true
+attribute :port, kind_of: String, required: true
