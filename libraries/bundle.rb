@@ -1,3 +1,4 @@
+require_relative 'curl'
 require 'uri'
 
 module AEM

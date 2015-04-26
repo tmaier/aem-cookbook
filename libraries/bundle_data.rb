@@ -1,9 +1,10 @@
+require_relative 'curl'
 require 'json'
 
 module AEM
   class Bundle
     class Data
-      include AEM::Curl
+      include Curl
 
       attr_reader :content
 
