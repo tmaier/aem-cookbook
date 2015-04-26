@@ -37,12 +37,12 @@ def curl_form(url, user, password, fields)
   c
 end
 
-def make_url(new_resource, action)
+def make_url(action)
   "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}/#{new_resource.name}.#{action}.json"
 end
 
-def set_permission(new_resource, fields)
-  url = make_url(new_resource, 'modifyAce')
+def set_permission(fields)
+  url = make_url('modifyAce')
 
   c = curl_form(url, new_resource.user, new_resource.password, fields)
   if c.response_code == 200 || c.response_code == 201
@@ -53,8 +53,8 @@ def set_permission(new_resource, fields)
   end
 end
 
-def remove_permission(new_resource, fields)
-  url = make_url(new_resource, 'deleteAce')
+def remove_permission(fields)
+  url = make_url('deleteAce')
 
   c = curl_form(url, new_resource.user, new_resource.password, fields)
   if c.response_code == 200 || c.response_code == 201
@@ -73,7 +73,7 @@ action :create do
     new_resource.privileges.each do |privilege, permission|
       fields << Curl::PostField.content("privilege@#{privilege}", permission)
     end
-    set_permission(new_resource, fields)
+    set_permission(fields)
   end
 end
 
@@ -82,6 +82,6 @@ action :delete do
     fields = [
       Curl::PostField.content('applyTo', new_resource.principal)
     ]
-    remove_permission(new_resource, fields)
+    remove_permission(fields)
   end
 end
