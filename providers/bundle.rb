@@ -18,6 +18,10 @@
 
 # This provider manages AEM bundles
 
+def whyrun_supported?
+  true
+end
+
 action :install do
   return if bundle.installed?
 
