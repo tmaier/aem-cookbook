@@ -51,7 +51,7 @@ def bundle
   return @bundle if @bundle
 
   uri = URI("http://#{new_resource.host}:#{new_resource.port}")
-  uri.username = new_resource.user
+  uri.user = new_resource.user
   uri.password = new_resource.password
 
   @bundle =
