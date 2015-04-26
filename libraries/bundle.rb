@@ -25,9 +25,9 @@ module AEM
       curl(uri) do |cu|
         cu.multipart_form_post = true
         fields = [
-          Curl::PostField.content('action', 'install'),
-          Curl::PostField.content('bundlestartlevel', '20'),
-          Curl::PostField.file('bundlefile', bundle_path)
+          ::Curl::PostField.content('action', 'install'),
+          ::Curl::PostField.content('bundlestartlevel', '20'),
+          ::Curl::PostField.file('bundlefile', bundle_path)
         ]
         cu.http_post(*fields)
       end
@@ -55,7 +55,7 @@ module AEM
       uri = aem_uri.dup
       uri.path += "/system/console/bundles/#{symbolic_name}"
       curl(uri) do |cu|
-        cu.http_post(Curl::PostField.content('action', 'uninstall'))
+        cu.http_post(::Curl::PostField.content('action', 'uninstall'))
       end
 
       uninstalled?
@@ -74,7 +74,7 @@ module AEM
       uri = aem_uri.dup
       uri.path += "/system/console/bundles/#{symbolic_name}"
       curl(uri) do |cu|
-        cu.http_post(Curl::PostField.content('action', 'start'))
+        cu.http_post(::Curl::PostField.content('action', 'start'))
       end
 
       started?
@@ -90,7 +90,7 @@ module AEM
       uri = aem_uri.dup
       uri.path += "/system/console/bundles/#{symbolic_name}"
       curl(uri) do |cu|
-        cu.http_post(Curl::PostField.content('action', 'stop'))
+        cu.http_post(::Curl::PostField.content('action', 'stop'))
       end
 
       stopped?
