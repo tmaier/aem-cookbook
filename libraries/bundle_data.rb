@@ -14,9 +14,9 @@ module AEM
           cu.on_success do |c, _|
             @content =
               JSON.parse(c.body_str)['data']
-                .select { |h| h['symbolicName'] == symbolic_name }
-                .first
-            end
+              .select { |h| h['symbolicName'] == symbolic_name }
+              .first
+          end
           cu.perform
         end
       end
