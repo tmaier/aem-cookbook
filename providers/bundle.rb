@@ -25,12 +25,16 @@ action :install do
 
   remote_file file_path do
     source new_resource.bundle_url
-
-    action :create
+    notifies :run, "ruby_block[Install Bundle #{new_resource.symbolic_name}]", :immediately
   end
 
-  bundle.bundle_path = file_path
-  bundle.install!
+  ruby_block "Install Bundle #{new_resource.symbolic_name}" do
+    action :nothing
+    block do
+      bundle.bundle_path = file_path
+      bundle.install!
+    end
+  end
 end
 
 action :start do
@@ -44,8 +48,6 @@ end
 action :uninstall do
   bundle.uninstall if bundle.installed?
 end
-
-private
 
 def bundle
   return @bundle if @bundle
