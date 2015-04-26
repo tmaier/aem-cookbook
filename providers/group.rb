@@ -57,17 +57,21 @@ end
 
 action :create do
   unless group_exists?(new_resource)
-    url = make_url(new_resource)
-    fields = [
-      Curl::PostField.content('createGroup', ''),
-      Curl::PostField.content('authorizableId', new_resource.name)
-    ]
-    curl_form(url, new_resource.admin_user, new_resource.admin_password, fields)
+    converge_by 'Create group' do
+      url = make_url(new_resource)
+      fields = [
+        Curl::PostField.content('createGroup', ''),
+        Curl::PostField.content('authorizableId', new_resource.name)
+      ]
+      curl_form(url, new_resource.admin_user, new_resource.admin_password, fields)
+    end
   end
 end
 
 action :delete do
   if group_exists?(new_resource)
-    # ToDo: delete group
+    converge_by 'Delete group' do
+      # ToDo: delete group
+    end
   end
 end

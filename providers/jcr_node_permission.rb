@@ -79,18 +79,22 @@ def remove_permission(new_resource, fields)
 end
 
 action :create do
-  fields = [
-    Curl::PostField.content('principalId', new_resource.principal)
-  ]
-  new_resource.privileges.each do |privilege, permission|
-    fields << Curl::PostField.content("privilege@#{privilege}", permission)
+  converge_by 'Set node permissions' do
+    fields = [
+      Curl::PostField.content('principalId', new_resource.principal)
+    ]
+    new_resource.privileges.each do |privilege, permission|
+      fields << Curl::PostField.content("privilege@#{privilege}", permission)
+    end
+    set_permission(new_resource, fields)
   end
-  set_permission(new_resource, fields)
 end
 
 action :delete do
-  fields = [
-    Curl::PostField.content('applyTo', new_resource.principal)
-  ]
-  remove_permission(new_resource, fields)
+  converge_by 'Remove node permissions' do
+    fields = [
+      Curl::PostField.content('applyTo', new_resource.principal)
+    ]
+    remove_permission(new_resource, fields)
+  end
 end

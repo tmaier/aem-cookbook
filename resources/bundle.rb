@@ -19,6 +19,7 @@
 # This resource manages AEM bundles
 
 actions :install, :start, :stop, :uninstall
+default_action :install
 
 attribute :symbolic_name, :kind_of => String, :name_attribute => true, :required => true
 attribute :version, :kind_of => String, :default => nil
