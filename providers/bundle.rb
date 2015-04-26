@@ -38,15 +38,33 @@ action :install do
 end
 
 action :start do
-  bundle.start! unless bundle.started?
+  return if bundle.started?
+
+  ruby_block "Start Bundle #{new_resource.symbolic_name}" do
+    block do
+      bundle.start!
+    end
+  end
 end
 
 action :stop do
-  bundle.stop! unless bundle.stopped?
+  return if bundle.stopped?
+
+  ruby_block "Stop Bundle #{new_resource.symbolic_name}" do
+    block do
+      bundle.stop!
+    end
+  end
 end
 
 action :uninstall do
-  bundle.uninstall if bundle.installed?
+  return if bundle.uninstalled?
+
+  ruby_block "Uninstall Bundle #{new_resource.symbolic_name}" do
+    block do
+      bundle.uninstall
+    end
+  end
 end
 
 def bundle
