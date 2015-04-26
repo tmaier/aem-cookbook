@@ -27,16 +27,18 @@ action :install do
 
   file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource.symbolic_name}-#{new_resource.version}.jar"
 
-  remote_file file_path do
-    source new_resource.bundle_url
-    notifies :run, "ruby_block[Install Bundle #{new_resource.symbolic_name}]", :immediately
-  end
+  converge_by "Install bundle #{new_resource.symbolic_name}" do
+    remote_file file_path do
+      source new_resource.bundle_url
+      notifies :run, "ruby_block[Install bundle #{new_resource.symbolic_name}]", :immediately
+    end
 
-  ruby_block "Install Bundle #{new_resource.symbolic_name}" do
-    action :nothing
-    block do
-      bundle.bundle_path = file_path
-      bundle.install!
+    ruby_block "Install bundle #{new_resource.symbolic_name}" do
+      action :nothing
+      block do
+        bundle.bundle_path = file_path
+        bundle.install!
+      end
     end
   end
 end
@@ -44,9 +46,11 @@ end
 action :start do
   return if bundle.started?
 
-  ruby_block "Start Bundle #{new_resource.symbolic_name}" do
-    block do
-      bundle.start!
+  converge_by "Start bundle #{new_resource.symbolic_name}" do
+    ruby_block "Start bundle #{new_resource.symbolic_name}" do
+      block do
+        bundle.start!
+      end
     end
   end
 end
@@ -54,9 +58,11 @@ end
 action :stop do
   return if bundle.stopped?
 
-  ruby_block "Stop Bundle #{new_resource.symbolic_name}" do
-    block do
-      bundle.stop!
+  converge_by "Stop bundle #{new_resource.symbolic_name}" do
+    ruby_block "Stop bundle #{new_resource.symbolic_name}" do
+      block do
+        bundle.stop!
+      end
     end
   end
 end
@@ -64,9 +70,11 @@ end
 action :uninstall do
   return if bundle.uninstalled?
 
-  ruby_block "Uninstall Bundle #{new_resource.symbolic_name}" do
-    block do
-      bundle.uninstall
+  converge_by "Uninstall bundle #{new_resource.symbolic_name}" do
+    ruby_block "Uninstall bundle #{new_resource.symbolic_name}" do
+      block do
+        bundle.uninstall
+      end
     end
   end
 end
