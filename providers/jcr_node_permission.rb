@@ -41,19 +41,6 @@ def make_url(new_resource, action)
   "http://#{new_resource.host}:#{new_resource.port}/#{new_resource.path}/#{new_resource.name}.#{action}.json"
 end
 
-def permission?(new_resource, privilege, permission)
-  url = make_url(new_resource, 'acl')
-  c = curl(url, user, password)
-  case c.response_code
-  when 200, 201
-    c.body_str
-  when 404
-    false
-  else
-    fail "Unable to read JCR node at #{url}. response_code: #{c.response_code} response: #{c.body_str}"
-  end
-end
-
 def set_permission(new_resource, fields)
   url = make_url(new_resource, 'modifyAce')
 
