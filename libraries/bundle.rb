@@ -10,7 +10,8 @@ module AEM
     attr_accessor :bundle_path
     attr_reader :symbolic_name, :version, :aem_uri
 
-    def initialize(symbolic_name:, version: nil, bundle_path: nil, aem_uri: 'http://admin:admin@localhost:4502')
+    def initialize(symbolic_name: nil, version: nil, bundle_path: nil, aem_uri: 'http://admin:admin@localhost:4502')
+      fail 'symbolic_name missing' unless symbolic_name
       @symbolic_name = symbolic_name
       @version = version
       @bundle_path = bundle_path
