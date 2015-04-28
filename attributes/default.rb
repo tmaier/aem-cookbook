@@ -57,7 +57,7 @@ default[:aem][:commands] = {
     :aem55 => 'curl -u <%= admin_user %>:<%= admin_password %> -FdeleteAuthorizable= http://localhost:<%= port %><%= path %>/<%= user %>'
   },
   :add_user => {
-    :aem55 => 'curl -u <%= admin_user %>:<%= admin_password %> -FcreateUser= -FauthorizableId=<%= user %> -Frep:password=<%= password %> -Fmembership=<%= group %> -Fmembership=everyone http://localhost:<%= port %>/libs/granite/security/post/authorizables'
+    :aem55 => 'curl -u <%= admin_user %>:<%= admin_password %> -FcreateUser= -FauthorizableId=<%= user %> -Frep:password=<%= password %> -Fmembership=<%= group %> http://localhost:<%= port %>/libs/granite/security/post/authorizables'
   }
 }
 default[:aem][:author] = {

@@ -27,3 +27,4 @@ attribute :host, kind_of: String, default: 'localhost'
 attribute :port, kind_of: String, required: true
 attribute :admin_user, kind_of: String, required: true
 attribute :admin_password, kind_of: String, required: true
+attribute :parent_group, kind_of: String, required: false
