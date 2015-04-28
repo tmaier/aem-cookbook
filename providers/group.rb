@@ -61,8 +61,12 @@ action :create do
       url = make_url(new_resource)
       fields = [
         Curl::PostField.content('createGroup', ''),
-        Curl::PostField.content('authorizableId', new_resource.name)
+        Curl::PostField.content('authorizableId', new_resource.name),
+        Curl::PostField.content('membership', 'everyone')
       ]
+      if new_resource.parent_group
+        fields << Curl::PostField.content('membership', new_resource.parent_group)
+      end
       curl_form(url, new_resource.admin_user, new_resource.admin_password, fields)
     end
   end
