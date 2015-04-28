@@ -33,17 +33,27 @@ action :install do
     end
 
     ruby_block "Install bundle #{new_resource.symbolic_name}" do
-      action :nothing
       block do
         bundle.bundle_path = file_path
         bundle.install!
       end
+      only_if { ::File.exists?(file_path) }
     end
   end
 end
 
 action :start do
   converge_by "Start bundle #{new_resource.symbolic_name}" do
+    aem_url_watcher "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles/#{new_resource.symbolic_name}.json" do
+      validation_url "http://#{new_resource.host}:#{new_resource.port}/system/console/bundles/#{new_resource.symbolic_name}.json"
+      status_command "service aem-author status | grep running"
+      max_attempts 20
+      wait_between_attempts 5
+      user new_resource.user
+      password new_resource.password
+      match_string "\\\"state\\\":\\\"Installed\\\""
+      action :wait
+    end
     ruby_block "Start bundle #{new_resource.symbolic_name}" do
       block do
         bundle.start!
