@@ -1,5 +1,6 @@
 require_relative 'curl'
 require 'uri'
+require 'timeout'
 
 module AEM
   class Bundle
@@ -99,6 +100,16 @@ module AEM
 
     def stopped?
       !started?
+    end
+
+    private
+
+    def wait(&block)
+      Timeout::timeout(600) do
+        loop do
+          break if block.call
+        end
+      end
     end
   end
 end
