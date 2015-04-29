@@ -34,7 +34,7 @@ module AEM
         cu.http_post(*fields)
       end
 
-      installed?
+      wait { installed? }
     end
 
     def install
@@ -60,7 +60,7 @@ module AEM
         cu.http_post(::Curl::PostField.content('action', 'uninstall'))
       end
 
-      uninstalled?
+      wait { uninstalled? }
     end
 
     def uninstall
@@ -79,7 +79,7 @@ module AEM
         cu.http_post(::Curl::PostField.content('action', 'start'))
       end
 
-      started?
+      wait { started? }
     end
 
     def started?
@@ -95,7 +95,7 @@ module AEM
         cu.http_post(::Curl::PostField.content('action', 'stop'))
       end
 
-      stopped?
+      wait { stopped? }
     end
 
     def stopped?
