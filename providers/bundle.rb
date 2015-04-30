@@ -33,11 +33,11 @@ action :install do
     end
 
     ruby_block "Install bundle #{new_resource.symbolic_name}" do
-      action :nothing
       block do
         bundle.bundle_path = file_path
         bundle.install!
       end
+      only_if { ::File.exists?(file_path) }
     end
   end
 end
