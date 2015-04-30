@@ -66,22 +66,30 @@ def remove_permission(fields)
 end
 
 action :create do
-  converge_by 'Set node permissions' do
-    fields = [
-      Curl::PostField.content('principalId', new_resource.principal)
-    ]
-    new_resource.privileges.each do |privilege, permission|
-      fields << Curl::PostField.content("privilege@#{privilege}", permission)
+  converge_by "Set node permissions #{::File.join(new_resource.path, new_resource.name)} for #{new_resource.principal}" do
+    ruby_block "Set node permissions #{::File.join(new_resource.path, new_resource.name)} for #{new_resource.principal}" do
+      block do
+        fields = [
+          Curl::PostField.content('principalId', new_resource.principal)
+        ]
+        new_resource.privileges.each do |privilege, permission|
+          fields << Curl::PostField.content("privilege@#{privilege}", permission)
+        end
+        set_permission(fields)
+      end
     end
-    set_permission(fields)
   end
 end
 
 action :delete do
-  converge_by 'Remove node permissions' do
-    fields = [
-      Curl::PostField.content('applyTo', new_resource.principal)
-    ]
-    remove_permission(fields)
+  converge_by "Remove node permissions for #{::File.join(new_resource.path, new_resource.name)} for #{new_resource.principal}" do
+    ruby_block "Remove node permissions #{::File.join(new_resource.path, new_resource.name)} for #{new_resource.principal}" do
+      block do
+        fields = [
+          Curl::PostField.content('applyTo', new_resource.principal)
+        ]
+        remove_permission(fields)
+      end
+    end
   end
 end
