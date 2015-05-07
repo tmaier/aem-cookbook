@@ -23,58 +23,54 @@ def whyrun_supported?
 end
 
 action :install do
-  unless bundle.installed?
-    file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource.symbolic_name}-#{new_resource.version}.jar"
+  file_path = "#{Chef::Config[:file_cache_path]}/#{new_resource.symbolic_name}-#{new_resource.version}.jar"
 
-    converge_by "Install bundle #{new_resource.symbolic_name}" do
-      remote_file file_path do
-        source new_resource.bundle_url
-        notifies :run, "ruby_block[Install bundle #{new_resource.symbolic_name}]", :immediately
-      end
+  converge_by "Install bundle #{new_resource.symbolic_name}" do
+    remote_file file_path do
+      source new_resource.bundle_url
+      notifies :run, "ruby_block[Install bundle #{new_resource.symbolic_name}]", :immediately
+      not_if { bundle.installed? }
+    end
 
-      ruby_block "Install bundle #{new_resource.symbolic_name}" do
-        action :nothing
-        block do
-          bundle.bundle_path = file_path
-          bundle.install!
-        end
+    ruby_block "Install bundle #{new_resource.symbolic_name}" do
+      block do
+        bundle.bundle_path = file_path
+        bundle.install!
       end
+      only_if { ::File.exists?(file_path) }
     end
   end
 end
 
 action :start do
-  unless bundle.started?
-    converge_by "Start bundle #{new_resource.symbolic_name}" do
-      ruby_block "Start bundle #{new_resource.symbolic_name}" do
-        block do
-          bundle.start!
-        end
+  converge_by "Start bundle #{new_resource.symbolic_name}" do
+    ruby_block "Start bundle #{new_resource.symbolic_name}" do
+      block do
+        bundle.start!
       end
+      not_if { bundle.started? }
     end
   end
 end
 
 action :stop do
-  unless bundle.stopped?
-    converge_by "Stop bundle #{new_resource.symbolic_name}" do
-      ruby_block "Stop bundle #{new_resource.symbolic_name}" do
-        block do
-          bundle.stop!
-        end
+  converge_by "Stop bundle #{new_resource.symbolic_name}" do
+    ruby_block "Stop bundle #{new_resource.symbolic_name}" do
+      block do
+        bundle.stop!
       end
+      not_if { bundle.stopped? }
     end
   end
 end
 
 action :uninstall do
-  unless bundle.uninstalled?
-    converge_by "Uninstall bundle #{new_resource.symbolic_name}" do
-      ruby_block "Uninstall bundle #{new_resource.symbolic_name}" do
-        block do
-          bundle.uninstall
-        end
+  converge_by "Uninstall bundle #{new_resource.symbolic_name}" do
+    ruby_block "Uninstall bundle #{new_resource.symbolic_name}" do
+      block do
+        bundle.uninstall
       end
+      not_if { bundle.uninstalled? }
     end
   end
 end

@@ -17,7 +17,7 @@
 <% @aem_options.keys.sort.each do |key| %>
 <%=   key %>=<%= @aem_options[key] %>
 <% end %>
-CQ_JVM_OPTS="<%= (@jvm_opts.keys.sort.map {|k| k if @jvm_opts[k]}).compact.join " " %>"
+CQ_JVM_OPTS="<%= (@jvm_opts.keys.map {|k| k if @jvm_opts[k]}).compact.join " " %>"
 
 CQ_JAR_OPTS="<%= @jar_opts.join " " %>"
 

@@ -22,7 +22,7 @@ module AEM
       end
 
       def found?
-        !!@content
+        !!content
       end
 
       def state
@@ -34,7 +34,7 @@ module AEM
       def version
         return nil unless found?
 
-        content['state']
+        content['version']
       end
     end
   end
